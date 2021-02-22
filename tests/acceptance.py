@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from seleniumwire import webdriver
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 class BrowserIntegrationTest(TestCase):
@@ -54,14 +54,22 @@ class BrowserIntegrationTest(TestCase):
         driver.quit()
 
     def test_chrome_can_access_requests(self):
-        url = 'https://www.wikipedia.org/'
+        url = 'https://www.websocket.org/echo.html'
         driver = webdriver.Chrome()
         driver.get(url)
 
-        request = driver.wait_for_request(url)
+        # request = driver.wait_for_request(url)
+        #
+        # self.assertEqual(request.response.status_code, 200)
+        # self.assertIn('text/html', request.response.headers['Content-Type'])
 
-        self.assertEqual(request.response.status_code, 200)
-        self.assertIn('text/html', request.response.headers['Content-Type'])
+        import time
+        time.sleep(15)
+
+        request = driver.wait_for_request('echo.websocket.org')
+
+        for msg in request.ws_messages:
+            print(msg.date, msg, msg.from_client)
 
         driver.quit()
 
